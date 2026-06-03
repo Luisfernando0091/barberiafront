@@ -1,5 +1,5 @@
 import '../../domain/entities/client.dart';
-import '../../data/models/client_model.dart';
+
 class ClientModel extends Client {
   ClientModel({
     required super.id,
@@ -11,8 +11,8 @@ class ClientModel extends Client {
   factory ClientModel.fromJson(Map<String, dynamic> json) {
     return ClientModel(
       id: json['id'],
-      nombres: json['nombres'],
-      telefono: json['telefono'],
+      nombres: json['name'], // <- cambio
+      telefono: json['phone'], // <- cambio
       email: json['email'],
     );
   }

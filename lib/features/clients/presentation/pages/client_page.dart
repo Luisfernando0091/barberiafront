@@ -1,3 +1,4 @@
+import 'package:barber_admin/features/clients/data/datasources/client_remote_datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:barber_admin/features/clients/presentation/pages/client_form_page.dart';
@@ -115,7 +116,7 @@ class _ClientPageState extends State<ClientPage> {
                               ),
 
                               PopupMenuButton<String>(
-                                onSelected: (value) {
+                                onSelected: (value) async {
                                   if (value == 'edit') {
                                     Navigator.push(
                                       context,
@@ -124,6 +125,51 @@ class _ClientPageState extends State<ClientPage> {
                                             ClientFormPage(client: client),
                                       ),
                                     );
+                                  }
+
+                                  if (value == 'delete') {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text('Eliminar cliente'),
+                                        content: Text(
+                                          '¿Desea eliminar a ${client.nombres}?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, false);
+                                            },
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                            },
+                                            child: const Text('Eliminar'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+
+                                    if (confirm == true) {
+                                      await ClientRemoteDataSource()
+                                          .deleteClient(client.id);
+
+                                      context
+                                          .read<ClientProvider>()
+                                          .deleteClient(client.id);
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Cliente eliminado correctamente',
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 itemBuilder: (context) => [

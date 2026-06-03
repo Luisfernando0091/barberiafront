@@ -28,36 +28,37 @@ class ClientProvider extends ChangeNotifier {
   List<Client> get filteredClients {
     if (search.isEmpty) return clients;
     return clients.where((client) {
-      return client.nombres.toLowerCase().contains(
-        search.toLowerCase(),
-        );
+      return client.nombres.toLowerCase().contains(search.toLowerCase());
     }).toList();
- 
-    
   }
 
   void addClient(Client client) {
     clients.add(client);
+    debugPrint('ADD CLIENT LOCAL');
+
     debugPrint('CLIENTE AGREGADO: ${client.nombres}');
     debugPrint('TOTAL CLIENTES: ${clients.length}');
     notifyListeners();
   }
 
-//ACTUALIZAR
+  //ACTUALIZAR
   void updateClient(Client client) {
-  final index = clients.indexWhere(
-    (c) => c.id == client.id,
-  );
+    final index = clients.indexWhere((c) => c.id == client.id);
 
-  if (index != -1) {
-    clients[index] = client;
+    if (index != -1) {
+      clients[index] = client;
+      notifyListeners();
+    }
+  }
+
+  //ELIMINAR
+  void deleteClient(String id) {
+    clients.removeWhere((client) => client.id == id);
     notifyListeners();
   }
-}
 
   void searchClients(String query) {
     search = query;
     notifyListeners();
   }
-
 }

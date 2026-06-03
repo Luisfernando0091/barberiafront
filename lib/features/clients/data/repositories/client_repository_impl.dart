@@ -11,4 +11,9 @@ class ClientRepositoryImpl implements ClientRepository {
   Future<List<Client>> getClients() {
     return remoteDataSource.getClients();
   }
+
+  @override
+  Future<Client> createClient(Client client) {
+    return remoteDataSource.createClient(client);
+  }
 }

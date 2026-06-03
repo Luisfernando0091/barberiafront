@@ -1,5 +1,5 @@
 class Client {
-  final int id;
+  final String id;
   final String nombres;
   final String telefono;
   final String? email;

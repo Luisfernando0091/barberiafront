@@ -3,6 +3,7 @@ import 'package:barber_admin/features/clients/domain/entities/client.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
+import '../../data/datasources/client_remote_datasource.dart';
 
 class ClientFormPage extends StatefulWidget {
   final Client? client;
@@ -39,11 +40,11 @@ class _ClientFormPageState extends State<ClientFormPage> {
     super.dispose();
   }
 
-  void _saveClient() {
+  Future<void> _saveClient() async {
     if (!_formKey.currentState!.validate()) return;
 
     final client = ClientModel(
-      id: widget.client?.id ?? DateTime.now().millisecondsSinceEpoch,
+      id: widget.client?.id ?? '',
       nombres: _nameController.text.trim(),
       telefono: _phoneController.text.trim(),
       email: _emailController.text.trim(),
@@ -52,12 +53,16 @@ class _ClientFormPageState extends State<ClientFormPage> {
     final provider = context.read<ClientProvider>();
 
     if (widget.client == null) {
+      await ClientRemoteDataSource().createClient(client);
+
       provider.addClient(client);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cliente registrado correctamente')),
       );
     } else {
+      await ClientRemoteDataSource().updateClient(client);
+
       provider.updateClient(client);
 
       ScaffoldMessenger.of(context).showSnackBar(
